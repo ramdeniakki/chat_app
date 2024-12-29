@@ -3,53 +3,53 @@ import './App.css';
 
 function App() {
   const [messages, setMessages] = useState<string[]>(["Hello from server!"]);
-  const wsRef = useRef<WebSocket | null>(null); // WebSocket connection reference
-  const inputRef = useRef<HTMLInputElement | null>(null); // Input field reference
-  const messageEndRef = useRef<HTMLDivElement | null>(null); // Ref to auto-scroll to the latest message
-  const typingTimeoutRef = useRef<number | null>(null); // Ref to manage typing timeout
+  const wsRef = useRef<WebSocket | null>(null); 
+  const inputRef = useRef<HTMLInputElement | null>(null); 
+  const messageEndRef = useRef<HTMLDivElement | null>(null); 
+  const typingTimeoutRef = useRef<number | null>(null); 
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
+    const wsUrl = " https://chatappback-8uleortzv-ramdeniakkis-projects.vercel.app"; 
+const ws = new WebSocket(wsUrl);
+
 
     ws.onmessage = (event) => {
-      setMessages((m) => [...m, event.data]); // Add new message to messages array
+      setMessages((m) => [...m, event.data]);
     };
 
-    // Store WebSocket connection in ref for later use
+   
     wsRef.current = ws;
 
-    // When connection opens, send join room message
     ws.onopen = () => {
       ws.send(
         JSON.stringify({
           type: "join",
           payload: {
-            roomId: "red", // Join room with ID "red"
+            roomId: "red", 
           },
         })
       );
     };
 
-    // Cleanup: close WebSocket when component unmounts
     return () => {
       ws.close();
     };
   }, []);
 
-  // Scroll to the bottom whenever a new message is added
+ 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle input field typing
+
   const handleTyping = () => {
     if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current); // Clear any previous timeout for stopping typing indication
+      clearTimeout(typingTimeoutRef.current); 
     }
 
     typingTimeoutRef.current = setTimeout(() => {
-      // You can send a typing event or do something here
-    }, 1000); // 1 second delay
+    
+    }, 1000);
   };
 
   const handleSendMessage = () => {
@@ -64,13 +64,13 @@ function App() {
         })
       );
       if (inputRef.current) {
-        inputRef.current.value = ''; // Clear input field
+        inputRef.current.value = ''; 
       }
     }
   };
 
   const handleClearChat = () => {
-    setMessages([]); // Clear all chat messages
+    setMessages([]); 
   };
 
   return (
@@ -84,17 +84,17 @@ function App() {
           >
             <span
               className={`${
-                index % 2 === 0 ? 'bg-white text-black' : 'bg-white text-black'
+                index % 2 === 0 ? 'bg-gray-100 text-black' : 'bg-purple-600 text-white'
               } p-4 rounded-xl shadow-lg max-w-xs break-words transition-all duration-300 ease-in-out transform hover:scale-105`}
             >
               {message}
             </span>
           </div>
         ))}
-        <div ref={messageEndRef} /> {/* Auto-scroll to latest message */}
+        <div ref={messageEndRef} /> 
       </div>
 
-      {/* Message Input & Send Button */}
+      
       <div className="w-full bg-black flex items-center p-4">
         <input
           ref={inputRef}
@@ -109,7 +109,6 @@ function App() {
         >
           Send
         </button>
-        {/* Clear Chat Button */}
         <button
           onClick={handleClearChat}
           className="ml-3 px-6 py-3 bg-red-600 text-white rounded-md shadow-lg transition-all duration-200 ease-in-out hover:bg-red-700 focus:outline-none"
